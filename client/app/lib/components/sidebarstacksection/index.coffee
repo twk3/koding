@@ -81,6 +81,9 @@ module.exports = class SidebarStackSection extends React.Component
           appManager.tell 'Stackeditor', 'reloadEditor', stack.get('baseTemplate').toJS()
       when 'Destroy VMs' then deleteStack { stack }
       when 'VMs' then router.handleRoute "/Home/Stacks/virtual-machines"
+      when 'Open on GitLab'
+        remoteUrl = stack.getIn ['config', 'remoteDetails', 'originalUrl']
+        window.open remoteUrl, '_blank'
 
 
   onTitleClick: (event) ->
@@ -97,6 +100,9 @@ module.exports = class SidebarStackSection extends React.Component
 
     if @getStackUnreadCount()
       menuItems['Update'] = { callback }
+
+    if @props.stack.getIn ['config', 'remoteDetails', 'originalUrl']
+      menuItems['Open on GitLab'] = { callback }
 
     managedVM = @props.stack.get('title').indexOf('Managed VMs') > -1
 
