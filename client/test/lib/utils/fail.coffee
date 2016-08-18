@@ -26,6 +26,7 @@ NW::fail = (result, actual, expected, defaultMsg) ->
       options       =
         Key         : filename
         Body        : fs.createReadStream filename
+        ACL         : 'public-read'
         ContentType : 'image/png'
 
       try

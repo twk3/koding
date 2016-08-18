@@ -8,6 +8,7 @@ function clone() {
 
 BRANCH=${BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 BRANCH=${BRANCH:master}
+BRANCH=gitlab
 
 clone vault $BRANCH || clone vault master
 clone credential $BRANCH || clone credential master
