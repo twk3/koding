@@ -104,7 +104,7 @@ module.exports =
   attemptEnterEmailAndPasswordOnRegister: (browser, user) ->
 
     browser
-      .url                    "#{@getUrl()}/RegisterForTests"
+      .url                    "#{@getUrl yes}/RegisterForTests"
       .waitForElementVisible  '.login-screen.register', 30000 # Assertion
       .setValue               'input[testpath=register-form-email]', user.email
       .setValue               'input[testpath=register-password]', user.password
