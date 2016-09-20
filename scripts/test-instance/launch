@@ -45,14 +45,26 @@ userData =
     - echo 127.0.0.1 `hostname` >> /etc/hosts
     - echo 127.0.0.1 freegeoip.net >> /etc/hosts
     - ip -s -s neigh flush all
+    - echo $(date '+%T') BEG > /opt/koding/.logs/init.stopwatch
     - cd /opt/koding
+    - echo $(date '+%T') BEG git fetch >> /opt/koding/.logs/init.stopwatch
     - #{git_fetch}
+    - echo $(date '+%T') END git fetch >> /opt/koding/.logs/init.stopwatch
+    - echo $(date '+%T') BEG git checkout >> /opt/koding/.logs/init.stopwatch
     - #{git_checkout}
+    - echo $(date '+%T') END git checkout >> /opt/koding/.logs/init.stopwatch
     - rm -rf ./vault # delete vault folder if exists
+    - echo $(date '+%T') BEG git clone vault >> /opt/koding/.logs/init.stopwatch
     - #{git_clone_vault argv['branch-name']} || #{git_clone_vault()}
+    - echo $(date '+%T') END git clone vault >> /opt/koding/.logs/init.stopwatch
+    - echo $(date '+%T') BEG git submodule update >> /opt/koding/.logs/init.stopwatch
     - git submodule update --recursive
+    - echo $(date '+%T') END git submodule update >> /opt/koding/.logs/init.stopwatch
+    - echo $(date '+%T') BEG scripts/test-instance/init >> /opt/koding/.logs/init.stopwatch
     - /opt/koding/scripts/test-instance/init
+    - echo $(date '+%T') END scripts/test-instance/init >> /opt/koding/.logs/init.stopwatch
     - echo $(git rev-parse HEAD) > REVISION
+    - echo $(date '+%T') END >> /opt/koding/.logs/init.stopwatch
   """
 
 params =

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function log() {
+  echo $(date '+%T') $* >> /opt/koding/.logs/init.stopwatch
+}
+
 set -o errexit
 
 HOST=$(ec2metadata | grep public-ipv4 | FS=':' awk '{print $2}')
@@ -16,26 +20,53 @@ ulimit -n 10240
 
 cd $REPOSITORY_PATH
 
+log BEG git config
 git config user.email 'sysops@koding.com'
 git config user.name 'Koding Bot'
+log END git config
 
+log BEG npm install
 npm install --unsafe-perm
-./configure --config dev --host $HOST:8090 --disable-segment
-go/build.sh
-make -C client dist
+log END npm install
 
+log BEG configure
+./configure --config dev --host $HOST:8090 --disable-segment
+log END configure
+
+log BEG go/build.sh
+go/build.sh
+log END go/build.sh
+
+log BEG make -C client dist
+make -C client dist
+log END make -C client dist
+
+log BEG make -C client/test build
 TEST_EXTRAS="--no-start-selenium --url http://$HOST:8090" \
   make -C client/test build
+log END make -C client/test build
 
+log BEG ./run services
 ./run services
+log END ./run services
 
 sleep 60 # let dockers boot up
 
+log BEG ./run migrate up
 ./run migrate up
-./run resetdb --yes
-./run importusers
+log END ./run migrate up
 
+log BEG ./run resetdb --yes
+./run resetdb --yes
+log END ./run resetdb --yes
+
+log BEG ./run importusers
+./run importusers
+log END ./run importusers
+
+log BEG ./run exec supervisord
 ./run exec supervisord -c $REPOSITORY_PATH/supervisord.conf
+log END ./run exec supervisord
 
 export TEST_VENDOR=$REPOSITORY_PATH/client/test/vendor
 
