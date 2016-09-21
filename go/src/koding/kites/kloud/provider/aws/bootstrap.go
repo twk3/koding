@@ -1,4 +1,4 @@
-package awsprovider
+package oldaws
 
 import (
 	"bytes"
@@ -14,6 +14,10 @@ import (
 
 	"golang.org/x/net/context"
 )
+
+func (s *Stack) BootstrapTemplates(credential interface{}) []*basestack.Template {
+	cred := credential.(*Cred)
+}
 
 // Bootstrap
 func (s *Stack) Bootstrap(context.Context) (interface{}, error) {
